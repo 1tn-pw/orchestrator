@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/1tn-pw/orchestrator/internal/service"
-	"github.com/bugfixes/go-bugfixes/logs"
-	ConfigBuilder "github.com/keloran/go-config"
+  "github.com/1tn-pw/orchestrator/internal/config"
+  "github.com/1tn-pw/orchestrator/internal/service"
+  "github.com/bugfixes/go-bugfixes/logs"
 )
 
 var (
@@ -15,7 +15,7 @@ var (
 func main() {
 	logs.Local().Infof("Starting %s version: %s, hash: %s", ServiceName, BuildVersion, BuildHash)
 
-	cfg, err := ConfigBuilder.Build(ConfigBuilder.Local)
+	cfg, err := config.Build()
 	if err != nil {
 		_ = logs.Local().Errorf("Error building config: %s", err.Error())
 		return
