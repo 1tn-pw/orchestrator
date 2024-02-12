@@ -12,7 +12,7 @@ type Config struct {
 }
 
 type Services struct {
-	ShortService string `env:"SHORT_SERVICE" envDefault:"1tn-pw.short:3000"`
+	ShortService string `env:"SHORT_SERVICE" envDefault:"short-service.1tn-pw:3000"`
 }
 
 func BuildServices(cfg *Config) error {
