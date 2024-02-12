@@ -82,8 +82,6 @@ func (s *Service) CreateShort(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }
 
 func (s *Service) GetShort(w http.ResponseWriter, r *http.Request) {
@@ -118,6 +116,4 @@ func (s *Service) GetShort(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }
