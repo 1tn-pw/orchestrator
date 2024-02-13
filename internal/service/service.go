@@ -7,6 +7,7 @@ import (
 	"github.com/bugfixes/go-bugfixes/logs"
 	"github.com/keloran/go-healthcheck"
 	"github.com/keloran/go-probe"
+	"github.com/rs/cors"
 	"net/http"
 )
 
@@ -28,31 +29,38 @@ func (s *Service) Start() error {
 }
 
 func (s *Service) startHTTP(errChan chan error) {
-	http.HandleFunc("GET /{url}", s.GetShort)
-	http.HandleFunc("POST /create", s.CreateShort)
-	http.HandleFunc("GET /health", healthcheck.HTTP)
-	http.HandleFunc("GET /probe", probe.HTTP)
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /{url}", s.GetShort)
+	mux.HandleFunc("POST /create", s.CreateShort)
+	mux.HandleFunc("GET /health", healthcheck.HTTP)
+	mux.HandleFunc("GET /probe", probe.HTTP)
+
+	allowedOrigins := []string{"https://www.1tn.pw", "https://1tn.pw"}
+	if s.Config.Local.Development {
+		allowedOrigins = append(allowedOrigins, "http://localhost:3000")
+	}
+	c := cors.New(cors.Options{
+		AllowedMethods: []string{http.MethodGet, http.MethodPost},
+		AllowedOrigins: allowedOrigins,
+		AllowedHeaders: []string{"Accept", "Content-Type"},
+		Debug:          true,
+	})
 
 	logs.Local().Infof("Starting HTTP on %d", s.Config.Local.HTTPPort)
-	errChan <- http.ListenAndServe(fmt.Sprintf(":%d", s.Config.Local.HTTPPort), nil)
-}
-
-func (s *Service) enableCORS(w http.ResponseWriter) {
-	if s.Config.Local.Development {
-		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
-	} else {
-		w.Header().Set("Access-Control-Allow-Origin", "https://www.1tn.pw")
-		w.Header().Set("Access-Control-Allow-Origin", "https://1tn.pw")
-	}
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With")
+	errChan <- http.ListenAndServe(fmt.Sprintf(":%d", s.Config.Local.HTTPPort), c.Handler(mux))
 }
 
 func (s *Service) CreateShort(w http.ResponseWriter, r *http.Request) {
-	s.enableCORS(w)
+	type CreateRequest struct {
+		URL string `json:"url"`
+	}
+	u := &CreateRequest{}
+	if err := json.NewDecoder(r.Body).Decode(u); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
-	url := r.FormValue("url")
-	if url == "" {
+	if u.URL == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -63,7 +71,7 @@ func (s *Service) CreateShort(w http.ResponseWriter, r *http.Request) {
 		Status string `json:"status,omitempty"`
 	}
 
-	resp, err := NewShortService(r.Context(), s.Config).CreateShort(r.Context(), url)
+	resp, err := NewShortService(r.Context(), s.Config).CreateShort(r.Context(), u.URL)
 	if err != nil {
 		if err := json.NewEncoder(w).Encode(&ShortResponse{
 			Status: err.Error(),
@@ -85,8 +93,6 @@ func (s *Service) CreateShort(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) GetShort(w http.ResponseWriter, r *http.Request) {
-	s.enableCORS(w)
-
 	url := r.PathValue("url")
 	if url == "" {
 		w.WriteHeader(http.StatusBadRequest)
