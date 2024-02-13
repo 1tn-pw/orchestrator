@@ -39,12 +39,15 @@ func (s *Service) startHTTP(errChan chan error) {
 	if s.Config.Local.Development {
 		allowedOrigins = append(allowedOrigins, "http://localhost:3000")
 	}
-	c := cors.New(cors.Options{
+	co := cors.Options{
 		AllowedMethods: []string{http.MethodGet, http.MethodPost},
 		AllowedOrigins: allowedOrigins,
 		AllowedHeaders: []string{"Accept", "Content-Type"},
-		Debug:          true,
-	})
+	}
+	if s.Config.Local.Development {
+		co.Debug = true
+	}
+	c := cors.New(co)
 
 	logs.Local().Infof("Starting HTTP on %d", s.Config.Local.HTTPPort)
 	errChan <- http.ListenAndServe(fmt.Sprintf(":%d", s.Config.Local.HTTPPort), c.Handler(mux))
