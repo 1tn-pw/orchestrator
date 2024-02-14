@@ -11,7 +11,7 @@ require (
 	github.com/keloran/go-probe v1.0.0
 	github.com/rs/cors v1.10.1
 	golang.org/x/net v0.21.0
-	google.golang.org/grpc v1.61.0
+	google.golang.org/grpc v1.61.1
 )
 
 require (
