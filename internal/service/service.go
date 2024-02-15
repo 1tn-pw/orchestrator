@@ -7,7 +7,6 @@ import (
 	"github.com/bugfixes/go-bugfixes/logs"
 	"github.com/keloran/go-healthcheck"
 	"github.com/keloran/go-probe"
-	"github.com/rs/cors"
 	"net/http"
 )
 
@@ -28,29 +27,57 @@ func (s *Service) Start() error {
 	return <-errChan
 }
 
-func (s *Service) startHTTP(errChan chan error) {
-	mux := http.NewServeMux()
-	mux.HandleFunc("GET /{url}", s.GetShort)
-	mux.HandleFunc("POST /create", s.CreateShort)
-	mux.HandleFunc("GET /health", healthcheck.HTTP)
-	mux.HandleFunc("GET /probe", probe.HTTP)
+func (s *Service) CORS(w http.ResponseWriter, r *http.Request) {
+	originalOrigin := r.Header.Get("Origin")
 
 	allowedOrigins := []string{"https://www.1tn.pw", "https://1tn.pw"}
 	if s.Config.Local.Development {
 		allowedOrigins = append(allowedOrigins, "http://localhost:3000")
 	}
-	co := cors.Options{
-		AllowedMethods: []string{http.MethodGet, http.MethodPost},
-		AllowedOrigins: allowedOrigins,
-		AllowedHeaders: []string{"Accept", "Content-Type"},
+
+	isAllowed := false
+	for _, origin := range allowedOrigins {
+		if origin == originalOrigin {
+			isAllowed = true
+			break
+		}
 	}
-	if s.Config.Local.Development {
-		co.Debug = true
+	if !isAllowed {
+		w.WriteHeader(http.StatusForbidden)
+		return
 	}
-	c := cors.New(co)
+
+	w.Header().Set("Access-Control-Allow-Origin", originalOrigin)
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type")
+	w.Header().Set("Access-Control-Max-Age", "86400")
+
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusOK)
+	}
+}
+
+func (s *Service) Middleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		s.CORS(w, r)
+
+		if r.Method != http.MethodOptions {
+			next.ServeHTTP(w, r)
+		}
+	})
+}
+
+func (s *Service) startHTTP(errChan chan error) {
+	mux := http.NewServeMux()
+	mux.HandleFunc(fmt.Sprintf("%s /{url}", http.MethodGet), s.GetShort)
+	mux.HandleFunc(fmt.Sprintf("%s /create", http.MethodPost), s.CreateShort)
+	mux.HandleFunc(fmt.Sprintf("%s /health", http.MethodGet), healthcheck.HTTP)
+	mux.HandleFunc(fmt.Sprintf("%s /probe", http.MethodGet), probe.HTTP)
+
+	middleWare := s.Middleware(mux)
 
 	logs.Local().Infof("Starting HTTP on %d", s.Config.Local.HTTPPort)
-	errChan <- http.ListenAndServe(fmt.Sprintf(":%d", s.Config.Local.HTTPPort), c.Handler(mux))
+	errChan <- http.ListenAndServe(fmt.Sprintf(":%d", s.Config.Local.HTTPPort), middleWare)
 }
 
 func (s *Service) CreateShort(w http.ResponseWriter, r *http.Request) {
