@@ -1,9 +1,9 @@
 package main
 
 import (
-  "github.com/1tn-pw/orchestrator/internal/config"
-  "github.com/1tn-pw/orchestrator/internal/service"
-  "github.com/bugfixes/go-bugfixes/logs"
+	"github.com/1tn-pw/orchestrator/internal/config"
+	"github.com/1tn-pw/orchestrator/internal/service"
+	"github.com/bugfixes/go-bugfixes/logs"
 )
 
 var (
