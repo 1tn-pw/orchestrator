@@ -3,11 +3,12 @@ package service
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+
 	"github.com/1tn-pw/orchestrator/internal/config"
 	"github.com/bugfixes/go-bugfixes/logs"
 	"github.com/keloran/go-healthcheck"
 	"github.com/keloran/go-probe"
-	"net/http"
 )
 
 type Service struct {
