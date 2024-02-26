@@ -6,7 +6,7 @@ require (
 	github.com/1tn-pw/protobufs v0.1.0
 	github.com/bugfixes/go-bugfixes v0.10.0
 	github.com/caarlos0/env/v8 v8.0.0
-	github.com/keloran/go-config v0.4.2
+	github.com/keloran/go-config v0.4.3
 	github.com/keloran/go-healthcheck v1.2.2
 	github.com/keloran/go-probe v1.0.0
 	golang.org/x/net v0.21.0
@@ -15,7 +15,7 @@ require (
 
 require (
 	github.com/cenkalti/backoff/v3 v3.2.2 // indirect
-	github.com/go-jose/go-jose/v3 v3.0.1 // indirect
+	github.com/go-jose/go-jose/v3 v3.0.2 // indirect
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/go-ping/ping v1.1.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
@@ -32,7 +32,7 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hashicorp/vault/api v1.12.0 // indirect
 	github.com/keloran/vault-helper v0.8.2 // indirect
-	github.com/klauspost/compress v1.17.6 // indirect
+	github.com/klauspost/compress v1.17.7 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
