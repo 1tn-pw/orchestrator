@@ -131,7 +131,11 @@ func (s *Service) GetShort(w http.ResponseWriter, r *http.Request) {
 	}
 
 	type LongResponse struct {
-		Long   string `json:"long,omitempty"`
+		Long        string `json:"long,omitempty"`
+		Title       string `json:"title,omitempty"`
+		Favicon     string `json:"favicon,omitempty"`
+		Description string `json:"description,omitempty"`
+
 		Status string `json:"status,omitempty"`
 	}
 
@@ -147,7 +151,10 @@ func (s *Service) GetShort(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.NewEncoder(w).Encode(&LongResponse{
-		Long: resp.GetUrl(),
+		Long:        resp.GetUrl(),
+		Title:       resp.GetTitle(),
+		Favicon:     resp.GetFavicon(),
+		Description: resp.GetDescription(),
 	}); err != nil {
 		_ = logs.Errorf("Error writing response: %s", err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
