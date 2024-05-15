@@ -4,7 +4,7 @@ go 1.22
 
 require (
 	github.com/1tn-pw/protobufs v0.1.2
-	github.com/bugfixes/go-bugfixes v0.12.10
+	github.com/bugfixes/go-bugfixes v0.12.16
 	github.com/caarlos0/env/v8 v8.0.0
 	github.com/keloran/go-config v1.2.2
 	github.com/keloran/go-healthcheck v1.2.2
