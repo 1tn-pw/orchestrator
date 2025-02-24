@@ -6,7 +6,7 @@ require (
 	github.com/1tn-pw/protobufs v0.1.2
 	github.com/bugfixes/go-bugfixes v0.13.0
 	github.com/caarlos0/env/v8 v8.0.0
-	github.com/keloran/go-config v1.4.1
+	github.com/keloran/go-config v1.5.2
 	github.com/keloran/go-healthcheck v1.2.2
 	github.com/keloran/go-probe v1.0.0
 	golang.org/x/net v0.35.0
@@ -49,7 +49,7 @@ require (
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78 // indirect
-	go.mongodb.org/mongo-driver v1.17.1 // indirect
+	go.mongodb.org/mongo-driver v1.17.2 // indirect
 	go.uber.org/mock v0.5.0 // indirect
 	golang.org/x/crypto v0.33.0 // indirect
 	golang.org/x/sync v0.11.0 // indirect
