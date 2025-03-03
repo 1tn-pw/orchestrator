@@ -1,6 +1,7 @@
 package service
 
 import (
+	"crypto/tls"
 	"fmt"
 	"github.com/1tn-pw/orchestrator/internal/config"
 	"github.com/bugfixes/go-bugfixes/logs"
@@ -9,6 +10,7 @@ import (
 	"github.com/keloran/go-probe"
 	"golang.org/x/net/context"
 	"net/http"
+	"time"
 )
 
 type Service struct {
@@ -42,9 +44,18 @@ func (s *Service) startHTTP(errChan chan error) {
 	mw.AddMiddleware(mw.CORS)
 	mw.AddAllowedOrigins("https://www.1tn.pw", "https://1tn.pw")
 	if s.Config.Local.Development {
-		mw.AddAllowedOrigins("http://localhost:3000")
+		mw.AddAllowedOrigins("http://localhost:3000", "*")
 	}
 
-	logs.Local().Infof("Starting HTTP on %d", s.Config.Local.HTTPPort)
-	errChan <- http.ListenAndServe(fmt.Sprintf(":%d", s.Config.Local.HTTPPort), mw.Handler(mux))
+	logs.Infof("Starting HTTP on %d", s.Config.Local.HTTPPort)
+	server := http.Server{
+		Addr:              fmt.Sprintf(":%d", s.Config.Local.HTTPPort),
+		Handler:           mw.Handler(mux),
+		ReadTimeout:       10 * time.Second,
+		WriteTimeout:      10 * time.Second,
+		IdleTimeout:       10 * time.Second,
+		ReadHeaderTimeout: 10 * time.Second,
+		TLSNextProto:      make(map[string]func(*http.Server, *tls.Conn, http.Handler)),
+	}
+	errChan <- server.ListenAndServe()
 }
