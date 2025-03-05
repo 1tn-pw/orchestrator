@@ -8,7 +8,7 @@ require (
 	github.com/1tn-pw/protobufs v0.1.2
 	github.com/bugfixes/go-bugfixes v0.13.0
 	github.com/caarlos0/env/v8 v8.0.0
-	github.com/keloran/go-config v1.5.5
+	github.com/keloran/go-config v1.5.6
 	github.com/keloran/go-healthcheck v1.2.2
 	github.com/keloran/go-probe v1.0.0
 	golang.org/x/net v0.36.0
