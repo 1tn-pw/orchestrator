@@ -12,7 +12,7 @@ require (
 	github.com/keloran/go-healthcheck v1.2.2
 	github.com/keloran/go-probe v1.0.0
 	golang.org/x/net v0.39.0
-	google.golang.org/grpc v1.71.1
+	google.golang.org/grpc v1.72.0
 )
 
 require (
