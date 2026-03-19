@@ -8,7 +8,6 @@ import (
 	"github.com/bugfixes/go-bugfixes/middleware"
 	"github.com/keloran/go-healthcheck"
 	"github.com/keloran/go-probe"
-	"golang.org/x/net/context"
 	"net/http"
 	"time"
 )
