@@ -37,7 +37,7 @@ func (s *Service) startHTTP(errChan chan error) {
 	mux.HandleFunc("GET /health", healthcheck.HTTP)
 	mux.HandleFunc("GET /probe", probe.HTTP)
 
-	mw := middleware.NewMiddleware(context.Background())
+	mw := middleware.NewMiddleware()
 	mw.AddMiddleware(middleware.SetupLogger(middleware.Error).Logger)
 	mw.AddMiddleware(middleware.RequestID)
 	mw.AddMiddleware(middleware.Recoverer)
