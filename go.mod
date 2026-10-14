@@ -3,7 +3,7 @@ module github.com/1tn-pw/orchestrator
 go 1.26.1
 
 require (
-	github.com/1tn-pw/protobufs v0.1.2
+	github.com/1tn-pw/protobufs v0.1.3
 	github.com/bugfixes/go-bugfixes v0.19.4
 	github.com/caarlos0/env/v8 v8.0.0
 	github.com/keloran/go-config v1.9.0

@@ -11,8 +11,11 @@ import (
 )
 
 func (s *Service) CreateShort(w http.ResponseWriter, r *http.Request) {
+	// Title and Description are optional; given a title, the short service uses them instead of reading the page.
 	type CreateRequest struct {
-		URL string `json:"url"`
+		URL         string `json:"url"`
+		Title       string `json:"title"`
+		Description string `json:"description"`
 	}
 	u := &CreateRequest{}
 	if err := json.NewDecoder(r.Body).Decode(u); err != nil {
@@ -25,7 +28,9 @@ func (s *Service) CreateShort(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := NewShortService(r.Context(), s.Config).CreateShort(r.Context(), u.URL)
+	resp, err := NewShortService(r.Context(), s.Config).CreateShort(r.Context(), &pb.CreateURLRequest{
+		Url: u.URL, Title: &u.Title, Description: &u.Description,
+	})
 	writeCreated(w, resp, err)
 }
 

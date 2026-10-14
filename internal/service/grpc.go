@@ -47,7 +47,7 @@ func (s *Short) GetLong(ctx context.Context, short string) (*pb.GetURLResponse, 
 	})
 }
 
-func (s *Short) CreateShort(ctx context.Context, long string) (*pb.CreateURLResponse, error) {
+func (s *Short) CreateShort(ctx context.Context, req *pb.CreateURLRequest) (*pb.CreateURLResponse, error) {
 	conn, err := grpc.DialContext(ctx, s.Config.Services.ShortService, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return &pb.CreateURLResponse{
@@ -62,7 +62,5 @@ func (s *Short) CreateShort(ctx context.Context, long string) (*pb.CreateURLResp
 	}()
 
 	client := pb.NewShortServiceClient(conn)
-	return client.CreateURL(ctx, &pb.CreateURLRequest{
-		Url: long,
-	})
+	return client.CreateURL(ctx, req)
 }
